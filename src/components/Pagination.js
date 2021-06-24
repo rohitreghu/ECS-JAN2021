@@ -1,14 +1,8 @@
 import React from "react";
 
-const Pagination = ({ booksPerPage, totalBooks, currentPage, handlePrev, handleNext, paginate, maxPageNumberLimit, minPageNumberLimit }) => {
-    const pageNumbers = [];
+const Pagination = ({ booksPerPage, totalBooks, currentPage, handlePrev, handleNext, paginate, rangeStart, rangeEnd }) => {
     const lastPage = Math.ceil(totalBooks / booksPerPage)
 
-
-
-    for (let i = 1; i <= lastPage; i++) {
-        pageNumbers.push(i);
-    }
     return (
         <nav>
             <ul className="pagination justify-content-center">
@@ -17,17 +11,42 @@ const Pagination = ({ booksPerPage, totalBooks, currentPage, handlePrev, handleN
                         <span aria-hidden="true">&laquo;</span>
                     </button>
                 </li>
-                {pageNumbers.map((number) => {
-                    if (number <= maxPageNumberLimit && number > minPageNumberLimit) {
-                        return (
-                            <li key={number} className="page-item">
-                                <button className={number === currentPage ? `btn btn-dark` : 'page-link'} onClick={() => paginate(number)}>{number}</button>
-                            </li>
-                        );
-                    } else {
-                        return null;
-                    }
-                })}
+                <li className="page-item">
+                    <button onClick={() => paginate(1)} className={1 === currentPage ? `btn btn-dark` : 'page-link'} href="#">1</button>
+                </li>
+                <li className="page-item">
+                    {currentPage < 5 ? (
+                        <button className={2 === currentPage ? `btn btn-dark` : 'page-link'} onClick={() => paginate(2)}>2</button>
+                    ) : (
+                        <button onClick={handlePrev} className="page-link" href="#">
+                            <span>...</span>
+                        </button>
+                    )}
+                </li>
+
+                <li className="page-item">
+                    <button className={rangeStart === currentPage ? `btn btn-dark` : 'page-link'} onClick={() => paginate(rangeStart)}>{rangeStart}</button>
+                </li>
+                <li className="page-item">
+                    <button className={rangeStart+1 === currentPage ? `btn btn-dark` : 'page-link'} onClick={() => paginate(rangeStart+1)}>{rangeStart+1}</button>
+                </li>
+                <li className="page-item">
+                    <button className={rangeEnd === currentPage ? `btn btn-dark` : 'page-link'} onClick={() => paginate(rangeEnd)}>{rangeEnd}</button>
+                </li>
+
+
+                <li className="page-item">
+                    {currentPage > lastPage-4 ? (
+                        <button className={lastPage-1 === currentPage ? `btn btn-dark` : 'page-link'} onClick={() => paginate(lastPage-1)}>{lastPage-1}</button>
+                    ) : (
+                        <button onClick={handlePrev} className="page-link" href="#">
+                            <span>...</span>
+                        </button>
+                    )}
+                </li>
+                <li className="page-item">
+                    <button onClick={() => paginate(lastPage)} className={lastPage === currentPage ? `btn btn-dark` : 'page-link'} href="#">{lastPage}</button>
+                </li>
                 <li className={`page-item ${currentPage === lastPage ? 'disabled' : null}`}>
                     <button onClick={handleNext} className="page-link" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>

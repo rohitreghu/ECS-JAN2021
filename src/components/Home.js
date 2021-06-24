@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ReactPaginate from "react-paginate";
 
 import Navbar from "./Navbar";
 import DisplayBooks from "./DisplayBooks";
@@ -9,11 +8,13 @@ import Pagination from "./Pagination";
 const Home = () => {
     const [books, setBooks] = useState([]);
     const [displayedBooks, setDisplayedBooks] = useState([]);
+    const [searchedTerm, setSearchedTerm] = useState("");
 
+    //states for pagenation
     const [currentPage, setCurrentPage] = useState(1);
     const [booksPerPage] = useState(10);
-    const [maxPageNumberLimit, setMaxPageNumberLimit] = useState(5);
-    const [minPageNumberLimit, setMinPageNumberLimit] = useState(0);
+    const [rangeEnd, setRangeEnd] = useState(5);
+    const [rangeStart, setRangeStart] = useState(3);
 
     const indexOfLastBook = currentPage * booksPerPage;
     const indexOfFirstBook = indexOfLastBook - booksPerPage;
@@ -32,33 +33,67 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        setDisplayedBooks(books.slice(0,40));
+        setDisplayedBooks(books);
     }, [books])
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (searchedTerm) {
+                setDisplayedBooks(books.filter((book) => {
+                    if (typeof book.title === 'string') {
+                        return book.title.toLocaleLowerCase().includes(searchedTerm.toLocaleLowerCase());
+                    } else {
+                        return toString(book.title).toLocaleLowerCase().includes(searchedTerm.toLocaleLowerCase());
+                    }
+                }));
+            } else {
+                setDisplayedBooks(books);
+            }
+            console.log("damn");
+            setCurrentPage(1);
+        }, 1000);
+
+        return ()=> {
+            clearTimeout(timeoutId);
+        }
+    }, [searchedTerm, books]);
 
     const handleNext = () => {
         setCurrentPage(currentPage + 1);
-        if (currentPage > 2 && currentPage < displayedBooks.length - 2) {
-            setMaxPageNumberLimit(maxPageNumberLimit + 1)
-            setMinPageNumberLimit(minPageNumberLimit + 1)
+        const lastPage = Math.ceil(displayedBooks.length / booksPerPage)
+        if (currentPage > 3 && currentPage < lastPage - 3) {
+            setRangeStart(currentPage);
+            setRangeEnd(currentPage + 2);
         }
     }
 
     const handlePrev = () => {
         setCurrentPage(currentPage - 1);
-        if (currentPage > 2 && currentPage < displayedBooks.length - 2) {
-            setMaxPageNumberLimit(maxPageNumberLimit - 1)
-            setMinPageNumberLimit(minPageNumberLimit - 1)
+        const lastPage = Math.ceil(displayedBooks.length / booksPerPage)
+        if (currentPage > 4 && currentPage < lastPage - 2) {
+            setRangeStart(currentPage - 2);
+            setRangeEnd(currentPage);
         }
-
     }
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
+        const lastPage = Math.ceil(displayedBooks.length / booksPerPage)
+        if (pageNumber > 4 && pageNumber < lastPage - 2) {
+            setRangeStart(pageNumber - 1);
+            setRangeEnd(pageNumber + 1)
+        } else if (pageNumber === lastPage) {
+            setRangeStart(lastPage - 4);
+            setRangeEnd(lastPage - 2);
+        } else if (pageNumber === 1) {
+            setRangeStart(3);
+            setRangeEnd(5);
+        }
     }
 
     return (
         <div >
-            <Navbar />
+            <Navbar searchedTerm={searchedTerm} setSearchedTerm={setSearchedTerm} />
             <div className="container-fluid">
                 <table className="table">
                     <thead className="thead-light">
@@ -82,8 +117,8 @@ const Home = () => {
                     handleNext={handleNext}
                     handlePrev={handlePrev}
                     paginate={paginate}
-                    maxPageNumberLimit={maxPageNumberLimit}
-                    minPageNumberLimit={minPageNumberLimit}
+                    rangeStart={rangeStart}
+                    rangeEnd={rangeEnd}
                 />
             </div>
         </div>

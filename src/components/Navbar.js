@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const Navbar = () => {
+const Navbar = ({searchedTerm, setSearchedTerm }) => {
+    
     return (
         <div>
             <nav className="navbar navbar-expand-md navbar-dark bg-dark px-5">
@@ -12,7 +13,12 @@ const Navbar = () => {
 
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav m-auto">
-                        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                        <input
+                            className="form-control mr-sm-2"
+                            type="search" placeholder="Search"
+                            value={searchedTerm}
+                            onChange={e=>setSearchedTerm(e.target.value)}
+                        />
                     </ul>
                     <ul className="navbar-nav ml-auto">
                         <li className="nav-item active"><span className="nav-link">Cart</span></li>
