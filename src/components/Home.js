@@ -16,9 +16,13 @@ const Home = () => {
     const [rangeEnd, setRangeEnd] = useState(5);
     const [rangeStart, setRangeStart] = useState(3);
 
+    //states for sorting
+    const [sortAscPrice, setSortAscPrice] = useState(null);
+    const [sortAscRating, setSortAscRating] = useState(null);
+
     const indexOfLastBook = currentPage * booksPerPage;
     const indexOfFirstBook = indexOfLastBook - booksPerPage;
-    const paginatedBooks = displayedBooks.slice(indexOfFirstBook, indexOfLastBook);
+    const paginatedBooks = (displayedBooks.slice(indexOfFirstBook, indexOfLastBook))
 
     const url = "https://s3-ap-southeast-1.amazonaws.com/he-public-data/books8f8fe52.json";
 
@@ -28,13 +32,28 @@ const Home = () => {
             console.log(response.data);
             setBooks(response.data);
         }
-
         getBooks();
     }, []);
 
     useEffect(() => {
         setDisplayedBooks(books);
     }, [books])
+
+    useEffect(() => {
+        const lastPage = Math.ceil(displayedBooks.length / booksPerPage)
+
+        if (currentPage === 1) {
+            setRangeStart(3);
+            setRangeEnd(5);
+        } else if (currentPage >= 4 && currentPage < lastPage - 2) {
+            setRangeStart(currentPage - 1);
+            setRangeEnd(currentPage + 1)
+        } else if (currentPage === lastPage) {
+            setRangeStart(lastPage - 4);
+            setRangeEnd(lastPage - 2);
+        }
+    }, [currentPage, booksPerPage, displayedBooks]);
+
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -49,32 +68,13 @@ const Home = () => {
             } else {
                 setDisplayedBooks(books);
             }
-            console.log("damn");
             setCurrentPage(1);
         }, 1000);
 
-        return ()=> {
+        return () => {
             clearTimeout(timeoutId);
         }
     }, [searchedTerm, books]);
-
-    const handleNext = () => {
-        setCurrentPage(currentPage + 1);
-        const lastPage = Math.ceil(displayedBooks.length / booksPerPage)
-        if (currentPage > 3 && currentPage < lastPage - 3) {
-            setRangeStart(currentPage);
-            setRangeEnd(currentPage + 2);
-        }
-    }
-
-    const handlePrev = () => {
-        setCurrentPage(currentPage - 1);
-        const lastPage = Math.ceil(displayedBooks.length / booksPerPage)
-        if (currentPage > 4 && currentPage < lastPage - 2) {
-            setRangeStart(currentPage - 2);
-            setRangeEnd(currentPage);
-        }
-    }
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -91,6 +91,38 @@ const Home = () => {
         }
     }
 
+    const handleNext = () => {
+        setCurrentPage(currentPage + 1);
+    }
+
+    const handlePrev = () => {
+        setCurrentPage(currentPage - 1);
+    }
+
+    const handleSort = (event) => {
+        const { id } = event.target;
+
+        setCurrentPage(1);
+
+        if (id === "price") {
+            if (sortAscPrice) {
+                setSortAscPrice(false);
+                setDisplayedBooks(prevValue => prevValue.sort((a, b) => a.price - b.price));
+            } else {
+                setSortAscPrice(true);
+                setDisplayedBooks(prevValue => prevValue.sort((a, b) => b.price - a.price));
+            }
+        } else {
+            if (sortAscRating) {
+                setSortAscRating(false);
+                setDisplayedBooks(prevValue => prevValue.sort((a, b) => a.average_rating - b.average_rating));
+            } else {
+                setSortAscRating(true);
+                setDisplayedBooks(prevValue => prevValue.sort((a, b) => b.average_rating - a.average_rating));
+            }
+        }
+    }
+
     return (
         <div >
             <Navbar searchedTerm={searchedTerm} setSearchedTerm={setSearchedTerm} />
@@ -101,8 +133,8 @@ const Home = () => {
                             <th scope="col">Title</th>
                             <th scope="col">Author</th>
                             <th scope="col">Language</th>
-                            <th scope="col">Rating</th>
-                            <th scope="col">Price</th>
+                            <th id="rating" scope="col" onClick={(e) => handleSort(e)} style={{ cursor: "pointer" }}>Rating</th>
+                            <th id="price" scope="col" onClick={(e) => handleSort(e)} style={{ cursor: "pointer" }}>Price</th>
                             <th scope="col">Buy</th>
                         </tr>
                     </thead>
