@@ -3,3 +3,44 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+#ex4 .x1 {
+  position: absolute;
+  right: 35%;
+  top: 25%;
+  content: attr(data-count);
+  font-size: 40%;
+  padding: 0.2em;
+  border-radius: 50%;
+  line-height: 1em;
+  color: black;
+  background: yellow;
+  text-align: center;
+  min-width: 1em;
+  font-weight: bold;
+}
+
+/* .badge #lblCartCount {
+  padding-left: 9px;
+  padding-right: 9px; 
+  padding: 10px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+} */
+
+/* .label-warning[href],
+.badge-warning[href] {
+  background-color: #c67605;
+} */
+#lblCartCount {
+    font-size: 14px;
+    font-style: normal;
+    background: white;
+    color: black;
+    /* padding: ; */
+    vertical-align: top;
+    margin-left: -24px; 
+    border-radius: 50%;
+}
+

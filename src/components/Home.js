@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { connect } from "react-redux";
+
 
 import Navbar from "./Navbar";
 import DisplayBooks from "./DisplayBooks";
 import Pagination from "./Pagination";
 
-const Home = () => {
+const Home = ({ cart }) => {
     const [books, setBooks] = useState([]);
     const [displayedBooks, setDisplayedBooks] = useState([]);
     const [searchedTerm, setSearchedTerm] = useState("");
@@ -19,6 +21,7 @@ const Home = () => {
     //states for sorting
     const [sortAscPrice, setSortAscPrice] = useState(null);
     const [sortAscRating, setSortAscRating] = useState(null);
+
 
     const indexOfLastBook = currentPage * booksPerPage;
     const indexOfFirstBook = indexOfLastBook - booksPerPage;
@@ -36,11 +39,8 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        setDisplayedBooks(books);
-    }, [books])
-
-    useEffect(() => {
         const lastPage = Math.ceil(displayedBooks.length / booksPerPage)
+        window.scroll(0, 0);
 
         if (currentPage === 1) {
             setRangeStart(3);
@@ -126,22 +126,24 @@ const Home = () => {
     return (
         <div >
             <Navbar searchedTerm={searchedTerm} setSearchedTerm={setSearchedTerm} />
-            <div className="container-fluid">
-                <table className="table">
-                    <thead className="thead-light">
-                        <tr>
-                            <th scope="col">Title</th>
-                            <th scope="col">Author</th>
-                            <th scope="col">Language</th>
-                            <th id="rating" scope="col" onClick={(e) => handleSort(e)} style={{ cursor: "pointer" }}>Rating</th>
-                            <th id="price" scope="col" onClick={(e) => handleSort(e)} style={{ cursor: "pointer" }}>Price</th>
-                            <th scope="col">Buy</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <DisplayBooks displayedBooks={paginatedBooks} />
-                    </tbody>
-                </table>
+            <div className="container-fluid" style={{ padding: "2% 5%" }}>
+                <div className="table-responsive">
+                    <table className="table">
+                        <thead className="thead-light">
+                            <tr>
+                                <th scope="col">Title</th>
+                                <th scope="col">Author</th>
+                                <th scope="col">Language</th>
+                                <th id="rating" scope="col" onClick={(e) => handleSort(e)} style={{ cursor: "pointer" }}>Rating</th>
+                                <th id="price" scope="col" onClick={(e) => handleSort(e)} style={{ cursor: "pointer" }}>Price</th>
+                                <th scope="col">Buy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <DisplayBooks displayedBooks={paginatedBooks} />
+                        </tbody>
+                    </table>
+                </div>
                 <Pagination
                     booksPerPage={booksPerPage}
                     totalBooks={displayedBooks.length}
@@ -157,4 +159,10 @@ const Home = () => {
     );
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+    return {
+        cart: state.cart
+    }
+}
+
+export default connect(mapStateToProps)(Home);

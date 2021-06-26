@@ -52,7 +52,7 @@ const Pagination = ({ booksPerPage, totalBooks, currentPage, handlePrev, handleN
                         {currentPage > lastPage - 4 ? (
                             <button className={lastPage - 1 === currentPage ? `btn btn-dark` : 'page-link'} onClick={() => paginate(lastPage - 1)}>{lastPage - 1}</button>
                         ) : (
-                            <button onClick={handlePrev} className="page-link" href="#">
+                            <button onClick={handleNext} className="page-link" href="#">
                                 <span>...</span>
                             </button>
                         )}

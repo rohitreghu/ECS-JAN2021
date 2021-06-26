@@ -1,17 +1,28 @@
-import React from "react";
+import React, { useRef } from "react";
 import { connect } from "react-redux";
 import StarRatings from "react-star-ratings";
+import { Toast } from 'primereact/toast';
+
+import 'primereact/resources/themes/saga-green/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 
 import { addToCart } from "../actions";
 
 const DisplayBooks = ({ displayedBooks, addToCart, cart }) => {
-    console.log(addToCart);
-    console.log(cart);
+    const toast = useRef(null);
+
+    const onAdd = (book) => {
+        addToCart(book);
+        toast.current.show({ severity: 'info', summary: 'Book Added to Cart', life: 2000 });
+    }
+
+
     return (
         displayedBooks.map((book) => {
             return (
                 <tr key={book.bookID}>
-                    <td>{book.title}</td>
+                    <td>{book.title}<Toast ref={toast} /></td>
                     <td>{book.authors}</td>
                     <td>{book.language_code}</td>
                     <td>
@@ -26,8 +37,9 @@ const DisplayBooks = ({ displayedBooks, addToCart, cart }) => {
 
                         <h6><span className="badge badge-warning">{parseFloat(book.ratings_count)}</span></h6>
                     </td>
-                    <td>{book.price}</td>
-                    <td><button onClick={() => addToCart(book)}>Add</button></td>
+                    <td ><span>₹&nbsp;{book.price}</span></td>
+                    <td><button className="btn btn-primary" onClick={() => onAdd(book)}>Add</button></td>
+                    
                 </tr>
             );
         })

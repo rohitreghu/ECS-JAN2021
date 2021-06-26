@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import Navbar from "./Navbar";
-import {emptyCart} from "../actions"
+import { emptyCart } from "../actions"
 
 const Checkout = ({ cart, emptyCart }) => {
     const [name, setName] = useState("");
@@ -71,7 +71,7 @@ const Checkout = ({ cart, emptyCart }) => {
             }
         } else if (id === "zip") {
             setZip(value);
-            if (value.length !== 6 && value.length!==0) {
+            if (value.length !== 6 && value.length !== 0) {
                 setZipError("Enter valid Zip Code")
             } else {
                 setZipError("");
@@ -90,8 +90,10 @@ const Checkout = ({ cart, emptyCart }) => {
         setSubmitClicked(true);
     }
 
-    if (submitClicked){
-        return <Redirect to={{pathname: "/home"}} />
+
+
+    if (submitClicked) {
+        return <Redirect to={{ pathname: "/home" }} />
     }
 
     return (
@@ -99,7 +101,7 @@ const Checkout = ({ cart, emptyCart }) => {
             <Navbar />
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-8 offset-2">
+                    <div className="col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12">
                         <form onSubmit={handleSubmit}>
                             <div className="card my-5">
                                 <div className="card-body">
@@ -145,7 +147,7 @@ const Checkout = ({ cart, emptyCart }) => {
                                             {mobNumberError && <div className="alert alert-danger">{mobNumberError}</div>}
                                         </div>
                                     </div>
-                                    <hr/>
+                                    <hr />
 
                                     <h5 className="card-title mt-4">Shipping Address</h5>
                                     <div className="card-text">
@@ -209,14 +211,15 @@ const Checkout = ({ cart, emptyCart }) => {
                                             {zipError && <div className="alert alert-danger">{zipError}</div>}
                                         </div>
                                     </div>
-                                    <hr/>
+                                    <hr />
 
-                                    <h5 className="card-title mt-4">Order Details</h5>
+                                    <h5 className="card-title mt-4 mb-3">Order Details</h5>
                                     <div>Total Quantity: {quantity}</div>
-                                    <div>Shipping: Free</div>
-                                    <div>Total Price: {total}</div>
-                                    <hr/>
+                                    <div className="text-danger">*Shipping: Free</div>
+                                    <h5>Total Price: ₹ {total}</h5>
+                                    <hr />
 
+                        
                                     <div>
                                         <button
                                             disabled={nameError || emailError || mobNumberError || stateError || cityError || zipError ? true : false}
@@ -242,4 +245,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {emptyCart: emptyCart})(Checkout);
+export default connect(mapStateToProps, { emptyCart: emptyCart })(Checkout);
