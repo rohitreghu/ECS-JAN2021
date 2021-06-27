@@ -27,58 +27,70 @@ const Cart = ({ cart, addToCart, deleteFromCart, deleteOneFromCart }) => {
     return (
         <div>
             <Navbar />
+            <Toast ref={toast} />
             <div className="container-fluid" style={{ padding: "1% 5%" }}>
-                <Toast ref={toast} />
+
                 <div className="d-flex justify-content-center">
                     <p className="display-4">Order Summary</p>
                 </div>
 
-                <div>
-                    <table className="table">
-                        <tbody>
-                            {cart.map((book) => {
-                                return (
-                                    <Fragment key={book.bookID}>
-                                        <tr className="row">
-                                            <td className="col-6">
-                                            <div className="bold"><strong>Book Title:</strong></div>
-                                            <div>{book.title}</div>
-                                            </td>
-                                            <td className="col-2">
-                                                <div className="d-flex justify-content-center">Price:&nbsp;₹&nbsp;{book.price}</div>
-                                                <div className="d-flex justify-content-center">SubTotal&nbsp;:&nbsp;₹{book.price * book.quantity}</div>
+                {cart.length > 0 ? (
+                    <div>
+                        <div>
+                            
+                            <table className="table">
+                                <tbody>
+                                    {cart.map((book) => {
+                                        return (
+                                            <Fragment key={book.bookID}>
+                                                <tr className="row">
+                                                    <td className="col-6">
+                                                        <div className="bold"><strong>Book Title:</strong></div>
+                                                        <div>{book.title}</div>
+                                                    </td>
+                                                    <td className="col-2">
+                                                        <div className="d-flex justify-content-center">Price:&nbsp;₹&nbsp;{book.price}</div>
+                                                        <div className="d-flex justify-content-center">SubTotal&nbsp;:&nbsp;₹{book.price * book.quantity}</div>
 
-                                            </td>
-                                            {/* <td><button onClick={() => deleteOneFromCart(book)}>-</button></td> */}
-                                            <td className="col-4 ">
-                                                <div className="d-flex justify-content-center">
-                                                    <button className="btn btn-primary btn-sm" onClick={() => deleteOneFromCart(book)}>-</button>
-                                                    <span style={{ padding: "0 8%" }}>{book.quantity}</span>
-                                                    <button className="btn btn-primary btn-sm" onClick={() => addToCart(book)}>+</button>
-                                                </div>
-                                                <div className="d-flex justify-content-center" style={{ padding: "4% 0 1% 0" }}>
-                                                    <button className="btn btn-danger btn-sm" onClick={() => onDelete(book)}><i className="far fa-trash-alt"></i></button>
-                                                </div>
-                                            </td>
+                                                    </td>
+                                                    {/* <td><button onClick={() => deleteOneFromCart(book)}>-</button></td> */}
+                                                    <td className="col-4 ">
+                                                        <div className="d-flex justify-content-center">
+                                                            <button className="btn btn-primary btn-sm" onClick={() => deleteOneFromCart(book)}>-</button>
+                                                            <span style={{ padding: "0 8%" }}>{book.quantity}</span>
+                                                            <button className="btn btn-primary btn-sm" onClick={() => addToCart(book)}>+</button>
+                                                        </div>
+                                                        <div className="d-flex justify-content-center" style={{ padding: "4% 0 1% 0" }}>
+                                                            <button className="btn btn-danger btn-sm" onClick={() => onDelete(book)}><i className="far fa-trash-alt"></i></button>
+                                                        </div>
+                                                    </td>
 
-                                        </tr>
+                                                </tr>
 
-                                    </Fragment>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-                                
-                <div className="row" style={{padding:"3% 0"}}>
-                    <div className="col-2">
-                        <h6 className="text-danger">*Shipping:&nbsp;FREE!</h6>
+                                            </Fragment>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div className="row" style={{ padding: "3% 0" }}>
+                            <div className="col-2">
+                                <h6 className="text-danger">*Shipping:&nbsp;FREE!</h6>
+                            </div>
+                            <div className="col-4 offset-6">
+                                <h5 className="d-flex justify-content-center">Total:&nbsp;₹&nbsp;{total}</h5>
+                                <div className="pt-2 d-flex justify-content-center"><NavLink className="btn btn-primary btn-lg" to="/checkout" exact>Checkout</NavLink></div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="col-4 offset-6">
-                        <h5 className="d-flex justify-content-center">Total:&nbsp;₹&nbsp;{total}</h5>
-                        <div className="pt-2 d-flex justify-content-center"><NavLink className="btn btn-primary btn-lg" to="/checkout" exact>Checkout</NavLink></div>
+                ) : (
+                    <div>
+
+                        <h5 className="d-flex justify-content-center text-danger">Cart Empty!</h5>
+                        <div className="pt-2 d-flex justify-content-center"><NavLink className="btn btn-primary btn-lg" to="/home" exact>Back to Books</NavLink></div>
                     </div>
-                </div>
+                )}
 
             </div>
         </div>

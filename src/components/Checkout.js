@@ -90,9 +90,7 @@ const Checkout = ({ cart, emptyCart }) => {
         setSubmitClicked(true);
     }
 
-
-
-    if (submitClicked) {
+    if (submitClicked || cart.length === 0) {
         return <Redirect to={{ pathname: "/home" }} />
     }
 
