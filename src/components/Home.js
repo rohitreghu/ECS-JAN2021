@@ -19,8 +19,7 @@ const Home = ({ cart }) => {
     const [rangeStart, setRangeStart] = useState(3);
 
     //states for sorting
-    const [sortAscPrice, setSortAscPrice] = useState(null);
-    const [sortAscRating, setSortAscRating] = useState(null);
+    const [sortBy, setSortBy] = useState("Featured");
 
 
     const indexOfLastBook = currentPage * booksPerPage;
@@ -32,7 +31,6 @@ const Home = ({ cart }) => {
     useEffect(() => {
         const getBooks = async () => {
             const response = await axios.get(url);
-            console.log(response.data);
             setBooks(response.data);
         }
         getBooks();
@@ -100,33 +98,51 @@ const Home = ({ cart }) => {
     }
 
     const handleSort = (event) => {
-        const { id } = event.target;
+        const { name } = event.target;
 
         setCurrentPage(1);
+        setSortBy(name);
 
-        if (id === "price") {
-            if (sortAscPrice) {
-                setSortAscPrice(false);
+        switch (name) {
+            case "Price: Low to High":
                 setDisplayedBooks(prevValue => prevValue.sort((a, b) => a.price - b.price));
-            } else {
-                setSortAscPrice(true);
+                break;
+            case "Price: High to Low":
                 setDisplayedBooks(prevValue => prevValue.sort((a, b) => b.price - a.price));
-            }
-        } else {
-            if (sortAscRating) {
-                setSortAscRating(false);
-                setDisplayedBooks(prevValue => prevValue.sort((a, b) => a.average_rating - b.average_rating));
-            } else {
-                setSortAscRating(true);
+                break;
+            case "Avg. Cutomer Ratings":
                 setDisplayedBooks(prevValue => prevValue.sort((a, b) => b.average_rating - a.average_rating));
-            }
+                break;
+            case "No. of Customer Ratings":
+                setDisplayedBooks(prevValue => prevValue.sort((a, b) => b.ratings_count - a.ratings_count));
+                break;
+            default:
         }
+
     }
 
     return (
         <div >
             <Navbar searchedTerm={searchedTerm} setSearchedTerm={setSearchedTerm} />
-            <div className="container-fluid" style={{ padding: "2% 5%" }}>
+            <div className="container-fluid" style={{padding: "0 4%"}}>
+                <div style={{margin:"1% 0 0 0"}}>
+                    <div className="btn-group">
+                        <button className="btn btn-warning btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Sort by: {sortBy}
+                        </button>
+                        <div className="dropdown-menu">
+                            <button onClick={handleSort} name="Price: Low to High" className="dropdown-item">Price: Low to High</button>
+                            <button onClick={handleSort} name="Price: High to Low" className="dropdown-item">Price: High to Low</button>
+                            <button onClick={handleSort} name="Avg. Cutomer Ratings" className="dropdown-item">Avg. Cutomer Ratings</button>
+                            <button onClick={handleSort} name="No. of Customer Ratings" className="dropdown-item">No. of Customer Ratings</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div className="container-fluid" style={{ padding: "1% 5%" }}>
+
                 <div className="table-responsive">
                     <table className="table">
                         <thead className="thead-light">
@@ -134,8 +150,8 @@ const Home = ({ cart }) => {
                                 <th scope="col">Title</th>
                                 <th scope="col">Author</th>
                                 <th scope="col">Language</th>
-                                <th id="rating" scope="col" onClick={(e) => handleSort(e)} style={{ cursor: "pointer" }}>Rating</th>
-                                <th id="price" scope="col" onClick={(e) => handleSort(e)} style={{ cursor: "pointer" }}>Price</th>
+                                <th id="rating" scope="col">Rating</th>
+                                <th id="price" scope="col">Price</th>
                                 <th scope="col">Buy</th>
                             </tr>
                         </thead>

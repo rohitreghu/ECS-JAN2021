@@ -24,7 +24,6 @@ const Cart = ({ cart, addToCart, deleteFromCart, deleteOneFromCart }) => {
         toast.current.show({ severity: 'error', summary: 'Book Removed From Cart', life: 2000 });
     }
 
-    console.log(cart);
     return (
         <div>
             <Navbar />

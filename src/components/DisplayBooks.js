@@ -29,7 +29,7 @@ const DisplayBooks = ({ displayedBooks, addToCart, cart }) => {
                         <h6 className="badge">
                             <StarRatings
                                 rating={typeof book.average_rating === "number" ? book.average_rating : 0}
-                                starRatedColor="#47ccde"
+                                starRatedColor="#0275d8"
                                 starDimension='15px'
                                 starSpacing='0'
                             />
