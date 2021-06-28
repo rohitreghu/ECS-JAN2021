@@ -1,6 +1,8 @@
 import { combineReducers } from "redux";
 
-const cartReducer = (cart = [], action) => {
+const initialCart = sessionStorage.getItem("cart") ? JSON.parse(sessionStorage.getItem("cart")) : [] ;
+
+const cartReducer = (cart = initialCart, action) => {
     const { payload } = action;
     switch (action.type) {
         case "ADD_TO_CART":
@@ -15,8 +17,10 @@ const cartReducer = (cart = [], action) => {
             
             if (!updationDoneAdd){
                 payload.quantity = 1
+                sessionStorage.setItem("cart", JSON.stringify([...cart, payload]));
                 return [...cart, payload]
             } else {
+                sessionStorage.setItem("cart", JSON.stringify(cartAfterAdd));
                 return cartAfterAdd
             }
         case "DELETE_ONE_FROM_CART":
@@ -33,20 +37,33 @@ const cartReducer = (cart = [], action) => {
             })
 
             if (!updationDoneDel){
+                sessionStorage.setItem("cart", JSON.stringify(
+                    cart.filter((book) => {
+                        return book.title !== payload.title;
+                    })
+                ));
                 return cart.filter((book) => {
                     return book.title !== payload.title;
                 })
             } else {
+                sessionStorage.setItem("cart", JSON.stringify(cartAferDel));
                 return cartAferDel;
             }
             
         case "DELETE_FROM_CART":
+            sessionStorage.setItem("cart", JSON.stringify(
+                cart.filter((book) => {
+                    return book.title !== payload.title;
+                })
+            ));
             return cart.filter((book) => {
                 return book.title !== payload.title;
             })
         case "EMPTY_CART":
+            sessionStorage.setItem("cart", JSON.stringify([]));
             return []
         default:
+            sessionStorage.setItem("cart", JSON.stringify(cart));
             return cart;
     }
 }
